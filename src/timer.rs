@@ -1,5 +1,17 @@
 use std::time::{Duration, Instant};
 
+/// Formats a number of seconds as `HH:MM:SS` or `MM:SS`.
+pub fn format_duration(seconds: u64) -> String {
+    let hours = seconds / 3600;
+    let minutes = (seconds % 3600) / 60;
+    let secs = seconds % 60;
+    if hours > 0 {
+        format!("{hours:02}:{minutes:02}:{secs:02}")
+    } else {
+        format!("{minutes:02}:{secs:02}")
+    }
+}
+
 pub struct Timer {
     ending_time: Option<Instant>,
     just_completed: bool,
@@ -23,18 +35,14 @@ impl Timer {
         self.ending_time = Some(Instant::now() + duration);
     }
 
+    /// Time remaining until the timer ends, or `None` if it isn't running.
+    pub fn remaining(&self) -> Option<Duration> {
+        self.ending_time
+            .map(|ending_time| ending_time.saturating_duration_since(Instant::now()))
+    }
+
     pub fn get_formatted_time(&self) -> Option<String> {
-        self.ending_time.as_ref().map(|ending_time| {
-            let seconds = (*ending_time - Instant::now()).as_secs();
-            let hours = seconds / 3600;
-            let minutes = (seconds % 3600) / 60;
-            let secs = seconds % 60;
-            if hours > 0 {
-                format!("{:02}:{:02}:{:02}", hours, minutes, secs)
-            } else {
-                format!("{:02}:{:02}", minutes, secs)
-            }
-        })
+        self.remaining().map(|remaining| format_duration(remaining.as_secs()))
     }
 
     pub fn is_started(&self) -> bool {

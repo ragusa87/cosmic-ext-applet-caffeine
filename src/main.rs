@@ -2,6 +2,7 @@ use crate::localize::localize;
 use crate::window::Window;
 
 mod caffeine;
+mod ipc;
 mod localize;
 mod timer;
 mod window;
