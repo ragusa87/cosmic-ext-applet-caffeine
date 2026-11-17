@@ -542,6 +542,9 @@ impl Window {
     }
 
     fn animate_stay_awake_toggle(&mut self, enabled: bool) {
+        if self.popup.is_none() {
+            return;
+        }
         let chain = if enabled {
             chain::Toggler::on(STAY_AWAKE_CONTROLS.clone(), 1.)
         } else {
@@ -551,6 +554,9 @@ impl Window {
     }
 
     fn animate_remember_state_toggle(&mut self, enabled: bool) {
+        if self.popup.is_none() {
+            return;
+        }
         let chain = if enabled {
             chain::Toggler::on(REMEMBER_STATE_CONTROLS.clone(), 1.)
         } else {
